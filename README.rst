@@ -33,7 +33,10 @@ using the following MyBinder link:
 Local Installation (MAC)
 ============
 
+The Cantera-AVBP installation requires homebrew and python version > 3.9 and < 3.14.  
+
 To ensure a smooth installation, we highly recommend setting up Cantera within a virtual environment.
+
 Follow the steps below for a **local** installation:
 
 0. Clone the Cantera repository::
