@@ -164,7 +164,7 @@ logger.info(
     f"    {sys.executable} (Python {python_version})", print_level=False)
 
 cantera_version = "3.1.0"
-cantera_avbp_version = "1.0.0"
+cantera_avbp_version = "1.0.1"
 # For use where pre-release tags are not permitted (MSI, sonames)
 cantera_pure_version = re.match(r'(\d+\.\d+\.\d+)', cantera_version).group(0)
 cantera_short_version = re.match(r'(\d+\.\d+)', cantera_version).group(0)
