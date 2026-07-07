@@ -3,6 +3,7 @@
 import sys
 import os
 import subprocess
+import shutil
 
 
 def fill_cantera_conf(file_path, install_dir_path):
@@ -58,9 +59,16 @@ def execute_with_live_display(command):
 
 # Asking about the environment
 if sys.version_info[0] < 3:
-    quit('You should compile cantera with python 3 ! Use module load python/3.9.5')
-    string_argument = raw_input('Are you installing Cantera on NFS machine ? (yes/no) ')
-    python_version = 2
+    print(f"Python version {sys.version_info[0]}.{sys.version_info[1]} detected.")
+    print("Cantera installation requires Python version >= 3.9")
+    print("==> Abort")
+    exit()
+elif sys.version_info[0] == 3 and sys.version_info[1] < 9:
+    print(f"Python version {sys.version_info[0]}.{sys.version_info[1]} detected.")
+    print("Cantera installation requires Python version >= 3.9")
+    print("==> Abort")
+    exit()
+
 else:
     string_argument = input('Are you installing Cantera on NFS machine ? (yes/no) ')
     python_version = 3
@@ -87,6 +95,14 @@ if not os.path.isdir(install_dir_path + "/mech_lib"):
 file_path = dir_path + "/cantera.conf"
 
 if argument == 'local':
+
+    # Check Brew is already installed
+    if shutil.which("brew") is None:
+        print("Homebrew is not installed.")
+        print("Please install it first:")
+        print('/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"')
+        raise SystemExit(1)
+
     print("""To run cantera, the installation of: \n
     - python, boost and gcc with brew command. \n
     - numpy, cython, scons, wheel and ruamel.yaml with pip3 command. \n
@@ -94,12 +110,13 @@ if argument == 'local':
     update_argument = input('Do you want to install/update those libraries ? (yes/no) ')
 
     if update_argument in ['yes', 'y']:
-        if subprocess.call('which brew', shell=True) == 1:
-            subprocess.call('/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"', shell=True)
+        # if subprocess.call('which brew', shell=True) == 1:
+        #     subprocess.call('/usr/bin/ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"', shell=True)
         subprocess.call('brew install boost', shell=True)
         subprocess.call('brew install gcc', shell=True)
+        subprocess.call('pip3 install setuptools', shell=True)
         subprocess.call('pip3 install numpy', shell=True)
-        subprocess.call('pip3 install cython==3.1.1', shell=True)
+        subprocess.call('pip3 install cython', shell=True)
         subprocess.call('pip3 install packaging', shell=True)
         subprocess.call('pip3 install scons', shell=True)
         subprocess.call('pip3 install wheel', shell=True)
@@ -146,7 +163,7 @@ if not error:
     print("To use this brandnew Cantera installation, you must update some of your environment variables.")
     print("To do so, you can add the following lines to your .bashrc (or equivalent):")
     text="""\
-#cantera-avbp-3.1
+#cantera-avbp
 function load_cantera
 {7}
     source {4}
